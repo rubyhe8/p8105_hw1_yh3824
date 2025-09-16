@@ -2,21 +2,20 @@
 title: Homework 1
 author: Ruby He 
 date: "2025-09-12"
-output: html_document
+output: github_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
+Load libraries
 ```{r}
 library(moderndive)
 library(tidyverse)
-
-data(early_january_weather)
 ```
 
-Problem 1
+## Problem 1
+
+```{r}
+data(early_january_weather) 
+```
 
 The variables in this dataset are `r names(early_january_weather)`.
 
@@ -29,26 +28,17 @@ Scatterplot
 ggplot(early_january_weather, aes(x = time_hour, y = temp, color = humid)) + geom_point()
 ggsave("scatter_plot.pdf",height = 4, width = 6)
 ```
-In the scatterplot we can see that temperature rises as the time increases. We can also see that humidity also seems to increase as the temperature rises. 
+In the scatterplot we can see that temperature rises as the time increases. We can also see that humidity also seems to increase as the temperature rises as well. 
 
-Problem 2
+## Problem 2
 
-Create a data frame comprised of:
-
-a random sample of size 10 from a standard Normal distribution
-a logical vector indicating whether elements of the sample are greater than 0
-a character vector of length 10
-a factor vector of length 10, with 3 different factor “levels”
-Try to take the mean of each variable in your dataframe. What works and what doesn’t?
-
-Hint: for now, to take the mean of a variable in a dataframe, you need to pull the variable out of the dataframe. Try loading the tidyverse and using the pull function.
 ```{r}
 prob2_df=
   tibble(
     num_samp = rnorm (10),
     greater_0 = num_samp > 0,
     char_vec = c("x","y","z","a","b","c","d","e","f","g"),
-    fac_vec = factor(c("1","2","1","3","3","1","1","2","3","1"))
+    fac_vec = factor(c("low","medium","low","high","high","low","low","medium","high","low"))
   )
 
 mean(pull(prob2_df,num_samp))
@@ -57,11 +47,9 @@ mean(pull(prob2_df,char_vec))
 mean(pull(prob2_df,fac_vec))
 ```
 
-you are unable to take the mean of the character and factor vectors - they are not numeric or logical. 
+you are unable to take the mean of the character and factor vectors, only the numeric and logical vectors produced a mean. 
 
-only the numeric and logical vectors produced a mean. 
-
-```{r}
+```{r results = "hide"}
 as.numeric(prob2_df$greater_0)
 as.numeric(prob2_df$char_vec)
 as.numeric(prob2_df$fac_vec)
