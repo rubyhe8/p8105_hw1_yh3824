@@ -4,57 +4,85 @@ author: Ruby He
 date: "2025-09-12"
 output: github_document
 ---
+## Problem 1
 
-Load libraries
+### Load libraries and dataset
+
 ```{r}
 library(moderndive)
 library(tidyverse)
-```
 
-## Problem 1
-
-```{r}
 data(early_january_weather) 
 ```
 
-The variables in this dataset are `r names(early_january_weather)`.
+### Description of Dataset
 
 This dataset has `r ncol(early_january_weather)` variables and `r nrow(early_january_weather)` observations. 
 
+The variables in this dataset are `r names(early_january_weather)`. 
+
+Key variable values include:
+
+* `origin`: weather station (either LGA, JFK, or EWR)
+* `year, month, day, hour, time_hour`: time (year, month, day, hour) of recording of the measurement 
+* `temp` and `dewp`: temperature and dewpoint in Fahrenheit 
+* `humid`: relative humidity as percentage. 
+* `wind_dr, wind_speed, and wind_gust`: wind direction in degrees, and wind speed and gust in miles per hour. 
+* `precip`: precipitation in inches 
+* `pressure`: sea level pressure in milibars
+* `visib`: the visibility in miles 
+
+
 The mean temperature is `r mean(early_january_weather$temp)`.
 
-Scatterplot
+### Scatterplot
+
 ```{r}
 ggplot(early_january_weather, aes(x = time_hour, y = temp, color = humid)) + geom_point()
-ggsave("scatter_plot.pdf",height = 4, width = 6)
 ```
+
 In the scatterplot we can see that temperature rises as the time increases. We can also see that humidity also seems to increase as the temperature rises as well. 
+
+### Saving the scatterplot 
+
+```{r}
+ggsave("sctplot_time_temp.pdf",height = 4, width = 6)
+```
 
 ## Problem 2
 
+### Making the dataframe
+
 ```{r}
-prob2_df=
+prob2_df =
   tibble(
     num_samp = rnorm (10),
     greater_0 = num_samp > 0,
-    char_vec = c("x","y","z","a","b","c","d","e","f","g"),
-    fac_vec = factor(c("low","medium","low","high","high","low","low","medium","high","low"))
+    shapes = c("circle","square","square","oval","rectangle",
+               "circle","square","triangle","circle","oval"),
+    levels = factor(c("low","medium","low","high","high","low","low","medium","high","low"))
   )
+```
 
+### Calculating the means 
+
+```{r}
 mean(pull(prob2_df,num_samp))
 mean(pull(prob2_df,greater_0))
-mean(pull(prob2_df,char_vec))
-mean(pull(prob2_df,fac_vec))
+mean(pull(prob2_df,shapes))
+mean(pull(prob2_df,levels))
 ```
 
-you are unable to take the mean of the character and factor vectors, only the numeric and logical vectors produced a mean. 
+We can see that we are unable to take the mean of the character and factor vectors, only the numeric and logical vectors produced a mean. 
 
-```{r results = "hide"}
-as.numeric(prob2_df$greater_0)
-as.numeric(prob2_df$char_vec)
-as.numeric(prob2_df$fac_vec)
+### Using as.numeric
+
+```{r results = "hide", warning = FALSE}
+as.numeric(pull(prob2_df,greater_0))
+as.numeric(pull(prob2_df,shapes))
+as.numeric(pull(prob2_df,levels))
 ```
 
-When you convert the logical, character, and factor variables to numeric variables, the logical vector becomes all 1s and 0s. The character vector becomes all NA. And the factor vector reassigns the levels to 1,2,3. 
+When you convert the logical, character, and factor variables to numeric variables, the logical vector converts the TRUE/FALSE to 1s and 0s, the character vector remains all NA, and the factor vector reassigns the levels to 1,2,3. 
 
-This would explain why when we try to take the mean prior to using as.numeric, the logical vector is able to produce a mean but the character and vector are not able to. Even if we do convert it to numeric, the characters are unable to become numbers and the factor as a number will not be helpful in finding a mean. 
+Even after using `as.numeric` the character vector stills returns NA as R is unable to assign numbers to words/characters. However, the logical vector becomes all 1s and 0s, representing TRUE and FALSE respectively. This could help us see the proportion of 1s and 0s when taking . The factor vector reassigns the levels to 1,2,3. Although they are numeric values now, they won't be able to help us when taking the mean as it does not represent the true distribution of the levels. 
